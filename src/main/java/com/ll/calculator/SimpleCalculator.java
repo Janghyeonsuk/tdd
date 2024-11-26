@@ -1,4 +1,4 @@
-package com.ll;
+package com.ll.calculator;
 
 public class SimpleCalculator {
     public int plus(int num1, int num2) {
@@ -18,6 +18,6 @@ public class SimpleCalculator {
     }
 
     public int reminder(int num1, int num2) {
-        return num1% num2;
+        return num1 % num2;
     }
 }

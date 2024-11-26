@@ -1,14 +1,16 @@
-package com.ll;
+package com.ll.Calculator;
 
+import com.ll.calculator.SimpleCalculator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
+
 
 public class SimpleCalculatorTest {
 
     @Test
-    @DisplayName("더하기")
+    @DisplayName("계산기")
     public void testPlus() throws Exception {
         //given
         SimpleCalculator simpleCalculator = new SimpleCalculator();
@@ -17,7 +19,7 @@ public class SimpleCalculatorTest {
         int rs = simpleCalculator.plus(1, 3);
 
         //then
-        assertEquals(4, rs);
+        assertThat(rs).isEqualTo(4);
     }
 
     @Test
@@ -30,8 +32,7 @@ public class SimpleCalculatorTest {
         int rs = simpleCalculator.minus(1, 3);
 
         //then
-        assertEquals(-2, rs);
-
+        assertThat(rs).isEqualTo(-2);
     }
 
     @Test
@@ -44,8 +45,7 @@ public class SimpleCalculatorTest {
         int rs = simpleCalculator.multiply(1, 3);
 
         //then
-        assertEquals(3, rs);
-
+        assertThat(rs).isEqualTo(3);
     }
 
     @Test
@@ -58,8 +58,7 @@ public class SimpleCalculatorTest {
         int rs = simpleCalculator.divide(1, 3);
 
         //then
-        assertEquals(0, rs);
-
+        assertThat(rs).isEqualTo(0);
     }
 
     @Test
@@ -72,7 +71,6 @@ public class SimpleCalculatorTest {
         int rs = simpleCalculator.reminder(1, 3);
 
         //then
-        assertEquals(1, rs);
-
+        assertThat(rs).isEqualTo(1);
     }
 }
