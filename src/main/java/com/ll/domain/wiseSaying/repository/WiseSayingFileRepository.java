@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class WiseSayingFileRepository implements WiseSayingRepository {
-    private final static String FILE_PATH = "db/";
+    private final static String FILE_PATH = "db/test/wiseSaying/";
     private final List<WiseSaying> wiseSayings;
     private int lastId;
 
@@ -28,7 +28,7 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         Map<String, Object> wiseSayingMap = wiseSaying.toMap();
         String jsonStr = Util.json.toString(wiseSayingMap);
 
-        Util.file.set("db/test/wiseSaying/1.json", jsonStr);
+        Util.file.set(genFilePath(wiseSaying.getId()), jsonStr);
 
         return wiseSaying;
     }
@@ -45,5 +45,9 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         return wiseSayings.stream()
                 .filter(wiseSaying -> wiseSaying.getId() == id)
                 .findFirst();
+    }
+
+    private String genFilePath(int id) {
+        return FILE_PATH + id + ".json";
     }
 }
