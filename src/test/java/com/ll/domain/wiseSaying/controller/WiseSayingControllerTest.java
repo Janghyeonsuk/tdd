@@ -111,4 +111,82 @@ public class WiseSayingControllerTest {
                 .contains("2  /  작자미상  /  과거에 집착하지 마라.")
                 .contains("1  /  작자미상  /  현재를 사랑하라.");
     }
+
+    @Test
+    @DisplayName("삭제 명령어 : 입력한 번호에 해당하는 명언이 삭제된다.")
+    public void t8() {
+        String output = AppTest.run("""
+                등록
+                현재를 사랑하라.
+                작자미상
+                등록
+                과거에 집착하지 마라.
+                작자미상
+                삭제?id=1
+                목록
+                """);
+
+        assertThat(output)
+                .contains("2  /  작자미상  /  과거에 집착하지 마라.")
+                .doesNotContain("1  /  작자미상  /  현재를 사랑하라.");
+    }
+
+    @Test
+    @DisplayName("삭제 명령어 : 입력한 번호에 해당하는 명언이 삭제된다.")
+    public void t9() {
+        String output = AppTest.run("""
+                등록
+                현재를 사랑하라.
+                작자미상
+                등록
+                과거에 집착하지 마라.
+                작자미상
+                삭제?id=3
+                목록
+                """);
+
+        assertThat(output)
+                .contains("3번 명언은 존재하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("수정 명령어 : 기존 명언과 기존 작가를 보여준다.")
+    public void t10() {
+        String output = AppTest.run("""
+                등록
+                현재를 사랑하라.
+                작자미상
+                등록
+                과거에 집착하지 마라.
+                작자미상
+                수정?id=2
+                새 명언 내용
+                새 작가
+                """);
+
+        assertThat(output)
+                .contains("명언(기존) : 과거에 집착하지 마라.")
+                .contains("작가(기존) : 작자미상");
+    }
+
+    @Test
+    @DisplayName("수정 명령어 : 명언이 수정된다.")
+    public void t11() {
+        String output = AppTest.run("""
+                등록
+                현재를 사랑하라.
+                작자미상
+                등록
+                과거에 집착하지 마라.
+                작자미상
+                수정?id=2
+                현재와 자신을 사랑하라.
+                홍길동
+                목록
+                """);
+
+        assertThat(output)
+                .contains("2  /  홍길동  /  현재와 자신을 사랑하라.");
+    }
+
 }

@@ -6,6 +6,7 @@ public class WiseSaying {
     private String author;
 
     public WiseSaying(String content, String author) {
+        this.id = 0;
         this.content = content;
         this.author = author;
     }
@@ -14,6 +15,10 @@ public class WiseSaying {
         this.id = id;
         this.content = content;
         this.author = author;
+    }
+
+    public boolean isNew() {
+        return id == 0;
     }
 
     public int getId() {
@@ -40,14 +45,10 @@ public class WiseSaying {
         this.author = author;
     }
 
-    public void updateWiseSaying(String content, String author) {
-        this.content = content;
-        this.author = author;
-    }
-
-
     @Override
     public String toString() {
         return id + "   /   " + author + "   /   " + content;
     }
+
+
 }
