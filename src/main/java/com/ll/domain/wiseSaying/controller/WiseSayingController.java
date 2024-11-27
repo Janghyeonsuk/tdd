@@ -29,12 +29,17 @@ public class WiseSayingController {
     }
 
     public void actionList() {
-        System.out.println("번호  /  작가  /  명언");
-        System.out.println("--------------------");
         List<WiseSaying> wiseSayings = wiseSayingService.findAll();
 
+        if (wiseSayings.isEmpty()) {
+            System.out.println("목록이 비어있습니다.");
+            return;
+        }
+        System.out.println("번호  /  작가  /  명언");
+        System.out.println("--------------------");
+
         for (WiseSaying wiseSaying : wiseSayings.reversed()) {
-            System.out.println(wiseSaying.getId() + "  /  " + wiseSaying.getAuthor() + "  /  " + wiseSaying.getContent());
+            System.out.println(wiseSaying);
         }
     }
 
