@@ -17,6 +17,12 @@ public class WiseSayingController {
         this.wiseSayingService = new WiseSayingService();
     }
 
+    //샘플데이터
+    public void initSampleData() {
+        wiseSayingService.add("나의 죽음을 적들에게 알리지 말라.", "이순신 장군");
+        wiseSayingService.add("삶이 있는 한 희망은 있다.", "키케로");
+    }
+
     public void actionAdd() {
         System.out.print("명언 : ");
         String content = sc.nextLine();

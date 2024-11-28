@@ -19,6 +19,8 @@ public class App {
     public void run() {
         System.out.println("== 명언 앱 ==");
 
+//        wiseSayingController.initSampleData();
+
         while (true) {
             System.out.print("명령) ");
             String cmd = sc.nextLine();

@@ -2,7 +2,6 @@ package com.ll.domain.wiseSaying.repository;
 
 import com.ll.domain.wiseSaying.entity.WiseSaying;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
