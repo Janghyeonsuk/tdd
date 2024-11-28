@@ -43,4 +43,8 @@ public class App {
         }
 
     }
+
+    public void makeSampleData(int items) {
+        wiseSayingController.makeSampleData(items);
+    }
 }

@@ -206,4 +206,33 @@ public class WiseSayingControllerTest {
                 .doesNotContain("1 / 작자미상 / 현재를 사랑하라.")
                 .contains("2 / 작자미상 / 과거에 집착하지 마라.");
     }
+
+    @Test
+    @DisplayName("목록(페이징) : 샘플데이터 생성")
+    public void t14() {
+        AppTest.makeSampleData(10);
+
+        String output = AppTest.run("""
+                목록
+                """);
+
+        assertThat(output)
+                .contains("1 / 작자미상 / 명언 1")
+                .contains("10 / 작자미상 / 명언 10");
+    }
+
+    @Test
+    @DisplayName("목록(페이징) : 샘플데이터 생성")
+    public void t15() {
+        AppTest.makeSampleData(10);
+
+        String output = AppTest.run("""
+                목록
+                """);
+
+        assertThat(output)
+                .contains("1 / 작자미상 / 명언 1")
+                .contains("10 / 작자미상 / 명언 10");
+    }
+
 }

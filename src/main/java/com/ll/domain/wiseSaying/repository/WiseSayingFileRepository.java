@@ -2,6 +2,7 @@ package com.ll.domain.wiseSaying.repository;
 
 import com.ll.domain.wiseSaying.entity.WiseSaying;
 import com.ll.global.app.AppConfig;
+import com.ll.standard.dto.Pageable;
 import com.ll.standard.util.Util;
 
 import java.io.IOException;
@@ -124,5 +125,17 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
                     return false;
                 })
                 .toList();
+    }
+
+    @Override
+    public void makeSampleData(int items) {
+        for (int i = 1; i <= items; i++) {
+            save(new WiseSaying(0, "명언 " + i, "작자미상"));
+        }
+    }
+
+    @Override
+    public Pageable<WiseSaying> pageable(int itemsPerPage, int page) {
+        return null;
     }
 }

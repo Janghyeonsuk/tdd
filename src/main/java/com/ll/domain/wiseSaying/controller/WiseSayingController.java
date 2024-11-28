@@ -47,11 +47,10 @@ public class WiseSayingController {
             String keywordType = command.getParam("keywordType", "content");
 
             wiseSayings = wiseSayingService.findByKeyword(keywordType, keyword);
-        }
-
-        if (wiseSayings.isEmpty()) {
-            System.out.println("명언이 없습니다. 등록해주세요.");
-            return;
+            if (wiseSayings.isEmpty()) {
+                System.out.println("존재하지 않는 내용 or 작가입니다.");
+                return;
+            }
         }
 
         for (WiseSaying wiseSaying : wiseSayings.reversed()) {
@@ -109,5 +108,9 @@ public class WiseSayingController {
     public void actionDirDelete() {
         wiseSayingService.deleteDir();
         System.out.println("디렉토리 삭제가 완료되었습니다.");
+    }
+
+    public void makeSampleData(int items) {
+        wiseSayingService.makeSampleData(items);
     }
 }

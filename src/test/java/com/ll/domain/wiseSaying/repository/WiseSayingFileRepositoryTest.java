@@ -2,6 +2,7 @@ package com.ll.domain.wiseSaying.repository;
 
 import com.ll.domain.wiseSaying.entity.WiseSaying;
 import com.ll.global.app.AppConfig;
+import com.ll.standard.dto.Pageable;
 import com.ll.standard.util.Util;
 import org.junit.jupiter.api.*;
 
@@ -114,19 +115,16 @@ public class WiseSayingFileRepositoryTest {
     }
 
     @Test
-    @DisplayName("빌드")
-    void t7() throws Exception {
-        //given
+    @DisplayName("빌드를 하면 data.json 파일이 생성된다.")
+    public void t7() {
         WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying1);
 
         WiseSaying wiseSaying2 = new WiseSaying(0, "나의 삶의 가치는 나의 결정에 달려있다.", "아인슈타인");
         wiseSayingRepository.save(wiseSaying2);
 
-        //when
         wiseSayingRepository.archive(WiseSayingFileRepository.getArchiveDirPath());
 
-        //then
         assertThat(
                 Util.file.exists(WiseSayingFileRepository.getArchiveDirPath())
         ).isTrue();
@@ -162,4 +160,26 @@ public class WiseSayingFileRepositoryTest {
                 ]
                 """.stripIndent().trim());
     }
+
+//    @Test
+//    @DisplayName("pageable")
+//    public void t9() {
+//        WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
+//        wiseSayingRepository.save(wiseSaying1);
+//
+//        WiseSaying wiseSaying2 = new WiseSaying(0, "나의 삶의 가치는 나의 결정에 달려있다.", "아인슈타인");
+//        wiseSayingRepository.save(wiseSaying2);
+//
+//        WiseSaying wiseSaying3 = new WiseSaying(0, "삶이 있는 한 희망은 있다.", "톨스토이");
+//        wiseSayingRepository.save(wiseSaying3);
+//
+//        // 한 페이지에 보여질 수 있는 아이템 개수
+//        int itemsPerPage = 2;
+//        int page = 1;
+//        Pageable<WiseSaying> pageable = wiseSayingRepository.pageable(itemsPerPage, page);
+//
+//        assertThat(
+//                pageable.getContent()
+//        ).containsExactly(wiseSaying3, wiseSaying2);
+//    }
 }
