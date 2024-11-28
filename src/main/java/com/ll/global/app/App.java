@@ -36,6 +36,8 @@ public class App {
                 case "목록" -> wiseSayingController.actionList();
                 case "삭제" -> wiseSayingController.actionDelete(command);
                 case "수정" -> wiseSayingController.actionModify(command);
+                case "빌드" -> wiseSayingController.actionBuild();
+                case "파일삭제" -> wiseSayingController.actionDirDelete();
                 default -> System.out.println("올바른 명령어가 아닙니다.");
             }
         }

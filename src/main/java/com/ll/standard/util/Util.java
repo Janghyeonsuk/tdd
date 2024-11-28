@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -71,8 +72,8 @@ public class Util {
                 Files.delete(dir);
                 return FileVisitResult.CONTINUE;
             }
-        }
 
+        }
         public static boolean delete(String filePath) {
             try {
                 Files.walkFileTree(getPath(filePath), new FileDeleteVisitor());
@@ -124,8 +125,8 @@ public class Util {
                     .filter(Files::isRegularFile)
                     .filter(path -> path.getFileName().toString().matches(fileNameRegex));
         }
-    }
 
+    }
     public static class json {
         private json() {
         }
@@ -153,6 +154,30 @@ public class Util {
 
             sb.append("\n");
             sb.append("}");
+
+            return sb.toString();
+        }
+
+        public static String toString(List<Map<String, Object>> mapList) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("[");
+            sb.append("\n");
+
+            String indent = "    ";
+
+            mapList.forEach(map -> {
+                sb.append(indent);
+                sb.append(toString(map).replaceAll("\n", "\n" + indent));
+                sb.append(",\n");
+            });
+
+            if (!mapList.isEmpty()) {
+                sb.delete(sb.length() - 2, sb.length());
+            }
+
+            sb.append("\n");
+            sb.append("]");
 
             return sb.toString();
         }

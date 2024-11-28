@@ -90,4 +90,14 @@ public class WiseSayingController {
         wiseSayingService.modify(wiseSaying, content, author);
         System.out.println(id + "번 명언이 수정되었습니다.");
     }
+
+    public void actionBuild() {
+        wiseSayingService.build();
+        System.out.println("data.json 파일의 내용이 갱신되었습니다.");
+    }
+
+    public void actionDirDelete() {
+        wiseSayingService.deleteDir();
+        System.out.println("디렉토리 삭제가 완료되었습니다.");
+    }
 }

@@ -38,4 +38,8 @@ public class WiseSayingMemoryRepository implements WiseSayingRepository {
                 .filter(wiseSaying -> wiseSaying.getId() == id)
                 .findFirst();
     }
+
+    @Override
+    public void archive(String archivePath) {
+    }
 }

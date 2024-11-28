@@ -39,4 +39,12 @@ public class WiseSayingService {
 
         wiseSayingRepository.save(wiseSaying);
     }
+
+    public void build(){
+        wiseSayingRepository.archive(WiseSayingFileRepository.getArchiveDirPath());
+    }
+
+    public void deleteDir() {
+        WiseSayingFileRepository.dropTable();
+    }
 }
