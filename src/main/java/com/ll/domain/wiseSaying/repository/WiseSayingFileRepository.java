@@ -1,6 +1,7 @@
 package com.ll.domain.wiseSaying.repository;
 
 import com.ll.domain.wiseSaying.entity.WiseSaying;
+import com.ll.global.app.AppConfig;
 import com.ll.standard.util.Util;
 
 import java.io.IOException;
@@ -9,12 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class WiseSayingFileRepository implements WiseSayingRepository {
-    public final static String DIR_PATH = "db/test/wiseSaying";
-    public final static String LAST_ID_PATH = "db/test/wiseSaying/lastId.txt";
-
-    public WiseSayingFileRepository() {
+    public static String getTableDirPath() {
+        return AppConfig.getDbDirPath() + "/wiseSaying";
     }
 
+    public static String getRowFilePath(int id) {
+        return getTableDirPath() + "/" + id + ".json";
+    }
+
+    public static String getLastIdPath() {
+        return getTableDirPath() + "/lastId.txt";
+    }
 
     public WiseSaying save(WiseSaying wiseSaying) {
         boolean isNew = wiseSaying.isNew();
@@ -25,7 +31,7 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
 
         String jsonStr = wiseSaying.toJsonStr();
 
-        Util.file.set(getFilePath(wiseSaying.getId()), jsonStr);
+        Util.file.set(getRowFilePath(wiseSaying.getId()), jsonStr);
 
         if (isNew) {
             setLastId(wiseSaying.getId());
@@ -34,12 +40,28 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         return wiseSaying;
     }
 
+    public List<WiseSaying> findAll() {
+        try {
+            return Util.file.walkRegularFiles(
+                            getTableDirPath(),
+                            "\\d+\\.json"
+                    )
+                    .map(path -> Util.file.get(path.toString(), ""))
+                    .map(WiseSaying::new)
+                    .toList();
+        } catch (NoSuchFileException e) {
+            return List.of();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean deleteById(int id) {
-        return Util.file.delete(getFilePath(id));
+        return Util.file.delete(getRowFilePath(id));
     }
 
     public Optional<WiseSaying> findById(int id) {
-        String filePath = getFilePath(id);
+        String filePath = getRowFilePath(id);
 
         if (Util.file.notExists(filePath)) {
             return Optional.empty();
@@ -54,22 +76,6 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         return Optional.of(new WiseSaying(jsonStr));
     }
 
-    public List<WiseSaying> findAll() {
-        try {
-            return Util.file.walkRegularFiles(
-                            DIR_PATH,
-                            "\\d+\\.json"
-                    )
-                    .map(path -> Util.file.get(path.toString(), ""))
-                    .map(WiseSaying::new)
-                    .toList();
-        } catch (NoSuchFileException e) {
-            return List.of();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public int getLastId() {
         return Util.file.getAsInt(getLastIdPath(), 0);
     }
@@ -78,16 +84,7 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         Util.file.set(getLastIdPath(), id);
     }
 
-
-    public static String getFilePath(int id) {
-        return DIR_PATH + "/" + id + ".json";
-    }
-
-    public static String getLastIdPath() {
-        return LAST_ID_PATH;
-    }
-
     public static void dropTable() {
-        Util.file.rmdir(WiseSayingFileRepository.DIR_PATH);
+        Util.file.rmdir(WiseSayingFileRepository.getTableDirPath());
     }
 }

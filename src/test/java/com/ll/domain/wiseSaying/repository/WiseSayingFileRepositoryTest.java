@@ -1,11 +1,9 @@
 package com.ll.domain.wiseSaying.repository;
 
 import com.ll.domain.wiseSaying.entity.WiseSaying;
+import com.ll.global.app.AppConfig;
 import com.ll.standard.util.Util;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Optional;
 
@@ -14,14 +12,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WiseSayingFileRepositoryTest {
     private final WiseSayingFileRepository wiseSayingRepository = new WiseSayingFileRepository();
 
+    @BeforeAll
+    public static void beforeAll() {
+        AppConfig.setTestMode();
+    }
+
     @BeforeEach
     public void beforeEach() {
-        Util.file.rmdir(WiseSayingFileRepository.DIR_PATH);
+        WiseSayingFileRepository.dropTable();
     }
 
     @AfterEach
     public void afterEach() {
-        Util.file.rmdir(WiseSayingFileRepository.DIR_PATH);
+        WiseSayingFileRepository.dropTable();
     }
 
     @Test
@@ -45,7 +48,7 @@ public class WiseSayingFileRepositoryTest {
 
         wiseSayingRepository.deleteById(wiseSaying.getId());
 
-        String filePath = WiseSayingFileRepository.getFilePath(wiseSaying.getId());
+        String filePath = WiseSayingFileRepository.getRowFilePath(wiseSaying.getId());
 
         assertThat(
                 Util.file.exists(filePath)
