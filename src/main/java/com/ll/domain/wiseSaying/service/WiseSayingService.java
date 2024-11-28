@@ -47,4 +47,8 @@ public class WiseSayingService {
     public void deleteDir() {
         WiseSayingFileRepository.dropTable();
     }
+
+    public List<WiseSaying> findByKeyword(String keywordType, String keyword) {
+        return wiseSayingRepository.findByKeyword(keywordType, keyword);
+    }
 }

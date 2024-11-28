@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class WiseSayingMemoryRepository implements WiseSayingRepository {
+public class WiseSayingMemoryRepository{
     private final List<WiseSaying> wiseSayings;
     private int lastId;
 
@@ -37,9 +37,5 @@ public class WiseSayingMemoryRepository implements WiseSayingRepository {
         return wiseSayings.stream()
                 .filter(wiseSaying -> wiseSaying.getId() == id)
                 .findFirst();
-    }
-
-    @Override
-    public void archive(String archivePath) {
     }
 }

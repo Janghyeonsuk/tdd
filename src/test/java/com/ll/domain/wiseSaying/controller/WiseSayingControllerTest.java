@@ -173,7 +173,7 @@ public class WiseSayingControllerTest {
     }
 
     @Test
-    @DisplayName("빌드 명령어 : 명언이 수정된다.")
+    @DisplayName("빌드 명령어 : data.json 생성")
     public void t12() {
         String output = AppTest.run("""
                 등록
@@ -187,5 +187,23 @@ public class WiseSayingControllerTest {
 
         assertThat(output)
                 .contains("data.json 파일의 내용이 갱신되었습니다.");
+    }
+
+    @Test
+    @DisplayName("목록(검색) 명령어 : 검색")
+    public void t13() {
+        String output = AppTest.run("""
+                등록
+                현재를 사랑하라.
+                작자미상
+                등록
+                과거에 집착하지 마라.
+                작자미상
+                목록?keywordType=content&keyword=과거
+                """);
+
+        assertThat(output)
+                .doesNotContain("1 / 작자미상 / 현재를 사랑하라.")
+                .contains("2 / 작자미상 / 과거에 집착하지 마라.");
     }
 }

@@ -34,15 +34,25 @@ public class WiseSayingController {
         System.out.println(wiseSaying.getId() + "번 명언이 등록되었습니다.");
     }
 
-    public void actionList() {
-        List<WiseSaying> wiseSayings = wiseSayingService.findAll();
-
-        if (wiseSayings.isEmpty()) {
-            System.out.println("목록이 비어있습니다.");
-            return;
-        }
+    public void actionList(Command command) {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
+
+        List<WiseSaying> wiseSayings = null;
+
+        if (command.getParam("keyword", "").isEmpty()) {
+            wiseSayings = wiseSayingService.findAll();
+        } else {
+            String keyword = command.getParam("keyword", "");
+            String keywordType = command.getParam("keywordType", "content");
+
+            wiseSayings = wiseSayingService.findByKeyword(keywordType, keyword);
+        }
+
+        if (wiseSayings.isEmpty()) {
+            System.out.println("명언이 없습니다. 등록해주세요.");
+            return;
+        }
 
         for (WiseSaying wiseSaying : wiseSayings.reversed()) {
             System.out.println(wiseSaying);
