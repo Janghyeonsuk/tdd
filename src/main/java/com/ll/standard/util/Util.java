@@ -5,6 +5,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class Util {
     public static class file {
@@ -23,6 +24,10 @@ public class Util {
             return !exists(filePath);
         }
 
+        public static void set(String filePath, int content) {
+            set(filePath, String.valueOf(content));
+        }
+
         public static void set(String filePath, String content) {
             Path path = getPath(filePath);
             try {
@@ -37,6 +42,34 @@ public class Util {
                 return Files.readString(getPath(filePath));
             } catch (IOException e) {
                 return defaultValue;
+            }
+        }
+
+        public static int getAsInt(String filePath, int defaultValue) {
+            String content = get(filePath, "");
+
+            if (content.isBlank()) {
+                return defaultValue;
+            }
+
+            try {
+                return Integer.parseInt(content);
+            } catch (NumberFormatException e) {
+                return defaultValue;
+            }
+        }
+
+        private static class FileDeleteVisitor extends SimpleFileVisitor<Path> {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
             }
         }
 
@@ -85,19 +118,11 @@ public class Util {
                 throw new RuntimeException("파일 접근 실패: " + path, e);
             }
         }
-    }
 
-    private static class FileDeleteVisitor extends SimpleFileVisitor<Path> {
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            Files.delete(file);
-            return FileVisitResult.CONTINUE;
-        }
-
-        @Override
-        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-            Files.delete(dir);
-            return FileVisitResult.CONTINUE;
+        public static Stream<Path> walkRegularFiles(String dirPath, String fileNameRegex) throws IOException {
+            return Files.walk(Path.of(dirPath))
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().matches(fileNameRegex));
         }
     }
 
@@ -108,25 +133,26 @@ public class Util {
         public static String toString(Map<String, Object> map) {
             StringBuilder sb = new StringBuilder();
 
-            sb.append("{").append("\n");
+            sb.append("{");
+            sb.append("\n");
 
             map.forEach((key, value) -> {
                 sb.append("    ");
                 key = "\"" + key + "\"";
 
-                //String 값일때만 쉼표 추가
-                if (value instanceof String)
+                if (value instanceof String) {
                     value = "\"" + value + "\"";
+                }
 
-                sb.append(key).append(": ").append(value).append(",").append("\n");
+                sb.append("%s: %s,\n".formatted(key, value));
             });
 
-            //마지막 쉼표와 줄바꿈 제거
             if (!map.isEmpty()) {
                 sb.delete(sb.length() - 2, sb.length());
             }
 
-            sb.append("\n").append("}");
+            sb.append("\n");
+            sb.append("}");
 
             return sb.toString();
         }
