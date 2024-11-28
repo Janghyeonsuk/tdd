@@ -4,9 +4,8 @@ import java.io.*;
 import java.util.Scanner;
 
 public class TestUtil {
-    // gen == generate 생성하다.
     // 테스트용 스캐너 생성
-    public static Scanner genScanner(final String input) {
+    public static Scanner getScanner(final String input) {
         final InputStream in = new ByteArrayInputStream(input.getBytes());
 
         return new Scanner(in);

@@ -12,7 +12,7 @@ public class TestUtilTest {
     @Test
     @DisplayName("Testutil.getScanner()")
     public void t1() throws Exception {
-        Scanner sc = TestUtil.genScanner("""
+        Scanner sc = TestUtil.getScanner("""
                 등록
                 나의 죽음을 적들에게 알리지 말라!
                 이순신

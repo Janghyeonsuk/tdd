@@ -1,6 +1,6 @@
 package com.ll.domain.wiseSaying.controller;
 
-import com.ll.Command;
+import com.ll.global.app.Command;
 import com.ll.domain.wiseSaying.entity.WiseSaying;
 import com.ll.domain.wiseSaying.service.WiseSayingService;
 
@@ -41,8 +41,8 @@ public class WiseSayingController {
             System.out.println("목록이 비어있습니다.");
             return;
         }
-        System.out.println("번호  /  작가  /  명언");
-        System.out.println("--------------------");
+        System.out.println("번호 / 작가 / 명언");
+        System.out.println("----------------------");
 
         for (WiseSaying wiseSaying : wiseSayings.reversed()) {
             System.out.println(wiseSaying);

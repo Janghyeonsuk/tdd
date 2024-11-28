@@ -1,5 +1,6 @@
 package com.ll;
 
+import com.ll.global.app.Command;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ public class CommandTest {
 
     @Test
     @DisplayName("""
-            cmd.getParam("id") == "10"
+            cmd.getParam("id") == "10"            
             """)
     public void t2() {
         Command cmd = new Command("삭제?id=10");
@@ -37,7 +38,7 @@ public class CommandTest {
             """)
     public void t4() {
         Command cmd = new Command("삭제?id=10");
-        assertThat(cmd.getParam("number", "없음")).isEqualTo("없음");
+        assertThat(cmd.getParam("number", "-")).isEqualTo("-");
     }
 
     @Test
@@ -61,7 +62,7 @@ public class CommandTest {
     @Test
     @DisplayName("""
             cmd.getParamAsInt("number", 0) == 10
-            cmd.getName("name") == "Paul
+             and cmd.getName("name") == "Paul"
             """)
     public void t7() {
         Command cmd = new Command("목록?number=10&name=Paul");
@@ -69,5 +70,11 @@ public class CommandTest {
         assertThat(cmd.getParam("name")).isEqualTo("Paul");
     }
 
-
+    @Test
+    @DisplayName("""
+            new Command("목록? ") does not throw Exception
+            """)
+    public void t8() {
+        Command cmd = new Command("목록? ");
+    }
 }

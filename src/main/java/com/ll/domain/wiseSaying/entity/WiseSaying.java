@@ -48,6 +48,6 @@ public class WiseSaying {
 
     @Override
     public String toString() {
-        return id + "   /   " + author + "   /   " + content;
+        return id + " / " + author + " / " + content;
     }
 }

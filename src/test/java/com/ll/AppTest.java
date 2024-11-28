@@ -1,29 +1,83 @@
 package com.ll;
 
+import com.ll.domain.wiseSaying.repository.WiseSayingFileRepository;
+import com.ll.global.app.App;
+import com.ll.global.app.AppConfig;
 import com.ll.standard.util.TestUtil;
+import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Scanner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class AppTest {
+
+    @BeforeAll
+    public static void beforeAll() {
+        AppConfig.setTestMode();
+    }
+
+    @BeforeEach
+    public void beforeEach() {
+        WiseSayingFileRepository.dropTable();
+    }
+
+    @AfterEach
+    public void afterEach() {
+        WiseSayingFileRepository.dropTable();
+    }
+
+    @Test
+    @DisplayName("== 명언 앱 ==")
+    public void t1() {
+        String output = AppTest.run("");
+
+        assertThat(output)
+                .contains("== 명언 앱 ==");
+    }
+
+    @Test
+    @DisplayName("명령) ")
+    public void t2() {
+        String output = AppTest.run("""
+                목록
+                """);
+
+        assertThat(output)
+                .contains("명령) ");
+    }
+
+    @Test
+    @DisplayName("명령을 2번 이상 입력할 수 있습니다.")
+    public void t3() {
+        String output = AppTest.run("""
+                목록
+                목록
+                """);
+
+        String[] split = output.split("명령\\)");
+        assertThat(split).hasSize(4);
+    }
+
     public static String run(String input) {
         input = input.stripIndent().trim() + "\n종료";
-
-        // 테스트용 스캐너 생성
-        Scanner sc = TestUtil.genScanner(input);
-
-        // System.out의 출력을 스트림으로 받기
+        Scanner scanner = TestUtil.getScanner(input);
         ByteArrayOutputStream outputStream = TestUtil.setOutToByteArray();
 
-        App app = new App(sc);
+        App app = new App(scanner);
         app.run();
 
-        //outputStream에 저장된 string을 반환
+        scanner.close();
+
         String output = outputStream.toString();
 
-        // setOutToByteArray 함수의 사용을 완료한 후 정리하는 함수, 출력을 다시 정상화 하는 함수
         TestUtil.clearSetOutToByteArray(outputStream);
 
         return output;
+    }
+
+    public static void dropTables() {
+        WiseSayingFileRepository.dropTable();
     }
 }

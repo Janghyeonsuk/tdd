@@ -1,56 +1,26 @@
 package com.ll.domain.wiseSaying.controller;
 
 import com.ll.AppTest;
-import com.ll.domain.wiseSaying.repository.WiseSayingFileRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.ll.global.app.AppConfig;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class WiseSayingControllerTest {
+    @BeforeAll
+    public static void beforeAll() {
+        AppConfig.setTestMode();
+    }
+
     @BeforeEach
     public void beforeEach() {
-        WiseSayingFileRepository.dropTable();
+        AppTest.dropTables();
     }
 
     @AfterEach
     public void afterEach() {
-        WiseSayingFileRepository.dropTable();
-    }
-
-    @Test
-    @DisplayName("== 명언 앱 ==")
-    public void t1() {
-        String output = AppTest.run("");
-
-        assertThat(output)
-                .contains("== 명언 앱 ==");
-    }
-
-    @Test
-    @DisplayName("명령) ")
-    public void t2() {
-        String output = AppTest.run("""
-                목록
-                """);
-
-        assertThat(output)
-                .contains("명령) ");
-    }
-
-    @Test
-    @DisplayName("명령을 2번 이상 입력할 수 있습니다.")
-    public void t3() {
-        String output = AppTest.run("""
-                목록
-                목록
-                """);
-
-        String[] split = output.split("명령\\)");
-        assertThat(split).hasSize(4);
+        AppTest.dropTables();
     }
 
     @Test
@@ -68,7 +38,7 @@ public class WiseSayingControllerTest {
     }
 
     @Test
-    @DisplayName("등록이 완료되면 명언 번호가 출력된다.")
+    @DisplayName("등록이 완료되면 명언번호가 출력된다.")
     public void t5() {
         String output = AppTest.run("""
                 등록
@@ -81,7 +51,7 @@ public class WiseSayingControllerTest {
     }
 
     @Test
-    @DisplayName("매번 생성되는 명언 번호는 1씩 증가한다.")
+    @DisplayName("매번 생성되는 명언번호는 1씩 증가 한다.")
     public void t6() {
         String output = AppTest.run("""
                 등록
@@ -102,7 +72,7 @@ public class WiseSayingControllerTest {
     }
 
     @Test
-    @DisplayName("목록 명령어 : 입력된 명언을 출력한다.")
+    @DisplayName("목록 명령어 : 입력된 명언들을 출력한다.")
     public void t7() {
         String output = AppTest.run("""
                 등록
@@ -118,11 +88,11 @@ public class WiseSayingControllerTest {
                 """);
 
         assertThat(output)
-                .contains("번호  /  작가  /  명언")
-                .contains("--------------------")
-                .contains("3   /   이순신   /   나의 죽음을 적들에게 알리지 말라!")
-                .contains("2   /   작자미상   /   과거에 집착하지 마라.")
-                .contains("1   /   작자미상   /   현재를 사랑하라.");
+                .contains("번호 / 작가 / 명언")
+                .contains("----------------------")
+                .contains("3 / 이순신 / 나의 죽음을 적들에게 알리지 말라!")
+                .contains("2 / 작자미상 / 과거에 집착하지 마라.")
+                .contains("1 / 작자미상 / 현재를 사랑하라.");
     }
 
     @Test
@@ -140,12 +110,12 @@ public class WiseSayingControllerTest {
                 """);
 
         assertThat(output)
-                .contains("2   /   작자미상   /   과거에 집착하지 마라.")
-                .doesNotContain("1   /   작자미상   /   현재를 사랑하라.");
+                .contains("2 / 작자미상 / 과거에 집착하지 마라.")
+                .doesNotContain("1 / 작자미상 / 현재를 사랑하라.");
     }
 
     @Test
-    @DisplayName("삭제 명령어 : 입력한 번호에 해당하는 명언이 삭제된다.")
+    @DisplayName("삭제 명령어 : 존재하지 않는 명언번호에 대한 처리")
     public void t9() {
         String output = AppTest.run("""
                 등록
@@ -199,7 +169,6 @@ public class WiseSayingControllerTest {
                 """);
 
         assertThat(output)
-                .contains("2   /   홍길동   /   현재와 자신을 사랑하라.");
+                .contains("2 / 홍길동 / 현재와 자신을 사랑하라.");
     }
-
 }
