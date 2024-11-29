@@ -161,7 +161,6 @@ public class WiseSayingFileRepositoryTest {
                 """.stripIndent().trim());
     }
 
-<<<<<<< HEAD
     @Test
     @DisplayName("페이징 : count")
     public void t9() {
@@ -262,27 +261,4 @@ public class WiseSayingFileRepositoryTest {
         assertThat(pageable.getContent())
                 .containsExactlyInAnyOrder(wiseSaying3, wiseSaying2);
     }
-=======
-//    @Test
-//    @DisplayName("pageable")
-//    public void t9() {
-//        WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
-//        wiseSayingRepository.save(wiseSaying1);
-//
-//        WiseSaying wiseSaying2 = new WiseSaying(0, "나의 삶의 가치는 나의 결정에 달려있다.", "아인슈타인");
-//        wiseSayingRepository.save(wiseSaying2);
-//
-//        WiseSaying wiseSaying3 = new WiseSaying(0, "삶이 있는 한 희망은 있다.", "톨스토이");
-//        wiseSayingRepository.save(wiseSaying3);
-//
-//        // 한 페이지에 보여질 수 있는 아이템 개수
-//        int itemsPerPage = 2;
-//        int page = 1;
-//        Pageable<WiseSaying> pageable = wiseSayingRepository.pageable(itemsPerPage, page);
-//
-//        assertThat(
-//                pageable.getContent()
-//        ).containsExactly(wiseSaying3, wiseSaying2);
-//    }
->>>>>>> d134a6aa2296de676ec36fc02541f1b4cd9691c5
 }

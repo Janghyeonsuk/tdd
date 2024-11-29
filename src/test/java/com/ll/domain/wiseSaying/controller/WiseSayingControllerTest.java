@@ -213,11 +213,7 @@ public class WiseSayingControllerTest {
     }
 
     @Test
-<<<<<<< HEAD
     @DisplayName("목록(페이징) : page=1")
-=======
-    @DisplayName("목록(페이징) : 샘플데이터 생성")
->>>>>>> d134a6aa2296de676ec36fc02541f1b4cd9691c5
     public void t14() {
         AppTest.makeSampleData(10);
 
@@ -226,7 +222,6 @@ public class WiseSayingControllerTest {
                 """);
 
         assertThat(output)
-<<<<<<< HEAD
                 .contains("10 / 작자미상 / 명언 10")
                 .contains("6 / 작자미상 / 명언 6")
                 .doesNotContain("5 / 작자미상 / 명언 5")
@@ -236,19 +231,10 @@ public class WiseSayingControllerTest {
 
     @Test
     @DisplayName("목록(페이징) : page=2")
-=======
-                .contains("1 / 작자미상 / 명언 1")
-                .contains("10 / 작자미상 / 명언 10");
-    }
-
-    @Test
-    @DisplayName("목록(페이징) : 샘플데이터 생성")
->>>>>>> d134a6aa2296de676ec36fc02541f1b4cd9691c5
     public void t15() {
         AppTest.makeSampleData(10);
 
         String output = AppTest.run("""
-<<<<<<< HEAD
                 목록?page=2
                 """);
 
@@ -293,14 +279,4 @@ public class WiseSayingControllerTest {
                 .contains("1 / 작자미상 / 명언 1")
                 .contains("페이지 : [1]");
     }
-=======
-                목록
-                """);
-
-        assertThat(output)
-                .contains("1 / 작자미상 / 명언 1")
-                .contains("10 / 작자미상 / 명언 10");
-    }
-
->>>>>>> d134a6aa2296de676ec36fc02541f1b4cd9691c5
 }
