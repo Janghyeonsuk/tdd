@@ -1,12 +1,15 @@
 package com.ll.domain.wiseSaying.controller;
 
-import com.ll.global.app.Command;
 import com.ll.domain.wiseSaying.entity.WiseSaying;
 import com.ll.domain.wiseSaying.service.WiseSayingService;
+import com.ll.global.app.Command;
+import com.ll.standard.dto.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class WiseSayingController {
     private final Scanner sc;
@@ -35,28 +38,38 @@ public class WiseSayingController {
     }
 
     public void actionList(Command command) {
+        String keyword = command.getParam("keyword", "");
+        String keywordType = command.getParam("keywordType", "content");
+        int itemsPerPage = 5;
+        int page = command.getParamAsInt("page", 1);
+
+        boolean hasKeyword = !keyword.isBlank();
+
+        Pageable<WiseSaying> pageable = hasKeyword
+                ? wiseSayingService.pageable(keywordType, keyword, itemsPerPage, page)
+                : wiseSayingService.pageableAll(itemsPerPage, page);
+
+        if (hasKeyword) {
+            System.out.println("----------------------");
+            System.out.println("검색타입 : " + keywordType);
+            System.out.println("검색어 : " + keyword);
+            System.out.println("----------------------");
+        }
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
 
-        List<WiseSaying> wiseSayings = null;
-
-        if (command.getParam("keyword", "").isEmpty()) {
-            wiseSayings = wiseSayingService.findAll();
-        } else {
-            String keyword = command.getParam("keyword", "");
-            String keywordType = command.getParam("keywordType", "content");
-
-            wiseSayings = wiseSayingService.findByKeyword(keywordType, keyword);
-        }
-
-        if (wiseSayings.isEmpty()) {
-            System.out.println("명언이 없습니다. 등록해주세요.");
-            return;
-        }
-
-        for (WiseSaying wiseSaying : wiseSayings.reversed()) {
+        for (WiseSaying wiseSaying : pageable.getContent()) {
             System.out.println(wiseSaying);
         }
+
+        System.out.println("----------------------");
+
+        System.out.print("페이지 : ");
+        String pageMenu = IntStream.rangeClosed(1, pageable.getTotalPages())
+                .mapToObj(i -> i == page ? "[" + i + "]" : String.valueOf(i))
+                .collect(Collectors.joining(" "))
+                .toString();
+        System.out.println(pageMenu);
     }
 
     public void actionDelete(Command command) {
@@ -109,5 +122,9 @@ public class WiseSayingController {
     public void actionDirDelete() {
         wiseSayingService.deleteDir();
         System.out.println("디렉토리 삭제가 완료되었습니다.");
+    }
+
+    public void makeSampleData(int items) {
+        wiseSayingService.makeSampleData(items);
     }
 }

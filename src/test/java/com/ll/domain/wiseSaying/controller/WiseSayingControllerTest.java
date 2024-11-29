@@ -190,7 +190,7 @@ public class WiseSayingControllerTest {
     }
 
     @Test
-    @DisplayName("목록(검색) 명령어 : 검색")
+    @DisplayName("목록(검색)")
     public void t13() {
         String output = AppTest.run("""
                 등록
@@ -203,7 +203,80 @@ public class WiseSayingControllerTest {
                 """);
 
         assertThat(output)
+                .contains("----------------------")
+                .contains("검색타입 : content")
+                .contains("검색어 : 과거");
+
+        assertThat(output)
                 .doesNotContain("1 / 작자미상 / 현재를 사랑하라.")
                 .contains("2 / 작자미상 / 과거에 집착하지 마라.");
+    }
+
+    @Test
+    @DisplayName("목록(페이징) : page=1")
+    public void t14() {
+        AppTest.makeSampleData(10);
+
+        String output = AppTest.run("""
+                목록
+                """);
+
+        assertThat(output)
+                .contains("10 / 작자미상 / 명언 10")
+                .contains("6 / 작자미상 / 명언 6")
+                .doesNotContain("5 / 작자미상 / 명언 5")
+                .doesNotContain("1 / 작자미상 / 명언 1")
+                .contains("페이지 : [1] 2");
+    }
+
+    @Test
+    @DisplayName("목록(페이징) : page=2")
+    public void t15() {
+        AppTest.makeSampleData(10);
+
+        String output = AppTest.run("""
+                목록?page=2
+                """);
+
+        assertThat(output)
+                .doesNotContain("10 / 작자미상 / 명언 10")
+                .doesNotContain("6 / 작자미상 / 명언 6")
+                .contains("5 / 작자미상 / 명언 5")
+                .contains("1 / 작자미상 / 명언 1")
+                .contains("페이지 : 1 [2]");
+    }
+
+    @Test
+    @DisplayName("목록?page=2&keywordType=content&keyword=명언")
+    public void t16() {
+        AppTest.makeSampleData(10);
+
+        String output = AppTest.run("""
+                목록?page=2&keywordType=content&keyword=명언
+                """);
+
+        assertThat(output)
+                .doesNotContain("10 / 작자미상 / 명언 10")
+                .doesNotContain("6 / 작자미상 / 명언 6")
+                .contains("5 / 작자미상 / 명언 5")
+                .contains("1 / 작자미상 / 명언 1")
+                .contains("페이지 : 1 [2]");
+    }
+
+    @Test
+    @DisplayName("목록?page=1&keywordType=content&keyword=1")
+    public void t17() {
+        AppTest.makeSampleData(10);
+
+        String output = AppTest.run("""
+                목록?page=1&keywordType=content&keyword=1
+                """);
+
+        assertThat(output)
+                .contains("10 / 작자미상 / 명언 10")
+                .doesNotContain("9 / 작자미상 / 명언 9")
+                .doesNotContain("2 / 작자미상 / 명언 2")
+                .contains("1 / 작자미상 / 명언 1")
+                .contains("페이지 : [1]");
     }
 }

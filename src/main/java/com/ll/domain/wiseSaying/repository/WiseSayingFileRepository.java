@@ -2,10 +2,12 @@ package com.ll.domain.wiseSaying.repository;
 
 import com.ll.domain.wiseSaying.entity.WiseSaying;
 import com.ll.global.app.AppConfig;
+import com.ll.standard.dto.Pageable;
 import com.ll.standard.util.Util;
+import lombok.SneakyThrows;
 
-import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,22 +47,18 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         return wiseSaying;
     }
 
+    @SneakyThrows
     @Override
     public List<WiseSaying> findAll() {
-        try {
-            return Util.file.walkRegularFiles(
-                            getTableDirPath(),
-                            "\\d+\\.json"
-                    )
-                    .map(path -> Util.file.get(path.toString(), ""))
-                    .map(WiseSaying::new)
-                    .toList();
-        } catch (NoSuchFileException e) {
-            return List.of();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        return Util.file.walkRegularFiles(
+                        getTableDirPath(),
+                        "\\d+\\.json"
+                )
+                .map(path -> Util.file.get(path.toString(), ""))
+                .map(WiseSaying::new)
+                .sorted(Comparator.comparingInt(WiseSaying::getId).reversed()) // id 순 역순정렬
+                .toList();
         }
-    }
 
     @Override
     public boolean deleteById(int id) {
@@ -101,6 +99,7 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         String jsonStr = Util.json.toString(
                 findAll()
                         .stream()
+                        .sorted(Comparator.comparingInt(WiseSaying::getId))
                         .map(WiseSaying::toMap)
                         .toList()
         );
@@ -124,5 +123,94 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
                     return false;
                 })
                 .toList();
+    }
+
+    @Override
+    public void makeSampleData(int items) {
+        for (int i = 1; i <= items; i++) {
+            save(new WiseSaying(0, "명언 " + i, "작자미상"));
+        }
+    }
+
+    @SneakyThrows
+    @Override
+    public int count() {
+        return (int) Util.file.walkRegularFiles(
+                        getTableDirPath(),
+                        "\\d+\\.json"
+                )
+                .count();
+    }
+
+    @SneakyThrows
+    @Override
+    public int count(String keywordType, String keyword) {
+        return (int) Util.file.walkRegularFiles(
+                        getTableDirPath(),
+                        "\\d+\\.json"
+                )
+                .map(path -> Util.file.get(path.toString(), ""))
+                .map(WiseSaying::new)
+                .filter(wiseSaying -> {
+                    if (keywordType.equals("content")) {
+                        return wiseSaying.getContent().contains(keyword);
+                    }
+
+                    if (keywordType.equals("author")) {
+                        return wiseSaying.getAuthor().contains(keyword);
+                    }
+
+                    return false;
+                })
+                .count();
+    }
+
+    @Override
+    public Pageable<WiseSaying> pageable(String keywordType, String keyword, int itemsPerPage, int page) {
+        int totalItems = count(keywordType, keyword);
+
+        List<WiseSaying> content = findAll()
+                .stream()
+                .filter(wiseSaying -> {
+                    if (keywordType.equals("content")) {
+                        return wiseSaying.getContent().contains(keyword);
+                    }
+
+                    if (keywordType.equals("author")) {
+                        return wiseSaying.getAuthor().contains(keyword);
+                    }
+
+                    return false;
+                })
+                .skip((long) (page - 1) * itemsPerPage)
+                .limit(itemsPerPage)
+                .toList();
+
+        return Pageable.<WiseSaying>builder()
+                .totalItems(totalItems)
+                .itemsPerPage(itemsPerPage)
+                .page(page)
+                .keywordType(keywordType)
+                .keyword(keyword)
+                .content(content)
+                .build();
+    }
+
+    @Override
+    public Pageable<WiseSaying> pageableAll(int itemsPerPage, int page) {
+        int totalItems = count();
+
+        List<WiseSaying> content = findAll()
+                .stream()
+                .skip((long) (page - 1) * itemsPerPage)
+                .limit(itemsPerPage)
+                .toList();
+
+        return Pageable.<WiseSaying>builder()
+                .totalItems(totalItems)
+                .itemsPerPage(itemsPerPage)
+                .page(page)
+                .content(content)
+                .build();
     }
 }

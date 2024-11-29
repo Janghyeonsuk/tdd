@@ -80,4 +80,9 @@ public class AppTest {
     public static void dropTables() {
         WiseSayingFileRepository.dropTable();
     }
+
+    public static void makeSampleData(int itemCount) {
+        App app = new App(null);
+        app.makeSampleData(itemCount);
+    }
 }
