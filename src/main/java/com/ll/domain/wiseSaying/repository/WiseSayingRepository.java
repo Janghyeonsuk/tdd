@@ -20,7 +20,7 @@ public interface WiseSayingRepository {
     List<WiseSaying> findByKeyword(String keywordType, String keyword);
 
     void makeSampleData(int items);
-
+    
     int count();
 
     int count(String keywordType, String keyword);

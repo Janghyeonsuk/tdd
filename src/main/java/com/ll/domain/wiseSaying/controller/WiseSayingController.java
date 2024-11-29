@@ -59,6 +59,7 @@ public class WiseSayingController {
         System.out.println("----------------------");
 
         for (WiseSaying wiseSaying : pageable.getContent()) {
+
             System.out.println(wiseSaying);
         }
 

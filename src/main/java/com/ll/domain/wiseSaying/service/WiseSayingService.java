@@ -64,4 +64,5 @@ public class WiseSayingService {
     public Pageable<WiseSaying> pageable(String keywordType, String keyword, int itemsPerPage, int page) {
         return wiseSayingRepository.pageable(keywordType, keyword, itemsPerPage, page);
     }
+
 }
