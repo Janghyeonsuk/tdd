@@ -1,5 +1,9 @@
 package com.ll.standard.util;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -223,6 +227,16 @@ public class Util {
             }
 
             return map;
+        }
+    }
+    public static class mapper {
+        private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper() {{
+            registerModule(new JavaTimeModule());
+            setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        }};
+
+        public static Object mapToObj(Map<String, Object> map, Class<?> cls) {
+            return OBJECT_MAPPER.convertValue(map, cls);
         }
     }
 }

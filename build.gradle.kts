@@ -19,6 +19,11 @@ dependencies {
 
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2")
+
+    runtimeOnly("com.mysql:mysql-connector-j:9.1.0")
 }
 
 tasks.test {

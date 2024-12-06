@@ -5,32 +5,25 @@ import com.ll.domain.wiseSaying.service.WiseSayingService;
 import com.ll.global.app.Command;
 import com.ll.standard.dto.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class WiseSayingController {
-    private final Scanner sc;
+    private final Scanner scanner;
     private final WiseSayingService wiseSayingService;
 
-    public WiseSayingController(Scanner sc) {
-        this.sc = sc;
+    public WiseSayingController(Scanner scanner) {
+        this.scanner = scanner;
         this.wiseSayingService = new WiseSayingService();
-    }
-
-    //샘플데이터
-    public void initSampleData() {
-        wiseSayingService.add("나의 죽음을 적들에게 알리지 말라.", "이순신 장군");
-        wiseSayingService.add("삶이 있는 한 희망은 있다.", "키케로");
     }
 
     public void actionAdd() {
         System.out.print("명언 : ");
-        String content = sc.nextLine();
+        String content = scanner.nextLine();
         System.out.print("작가 : ");
-        String author = sc.nextLine();
+        String author = scanner.nextLine();
 
         WiseSaying wiseSaying = wiseSayingService.add(content, author);
 
@@ -55,12 +48,12 @@ public class WiseSayingController {
             System.out.println("검색어 : " + keyword);
             System.out.println("----------------------");
         }
+
         System.out.println("번호 / 작가 / 명언");
         System.out.println("----------------------");
 
         for (WiseSaying wiseSaying : pageable.getContent()) {
-
-            System.out.println(wiseSaying);
+            System.out.println(wiseSaying.getId() + " / " + wiseSaying.getAuthor() + " / " + wiseSaying.getContent());
         }
 
         System.out.println("----------------------");
@@ -77,23 +70,25 @@ public class WiseSayingController {
         int id = command.getParamAsInt("id", 0);
 
         if (id == 0) {
-            System.out.println("id(숫자)를 입력해주세요,");
+            System.out.println("id(숫자)를 입력해주세요.");
             return;
         }
 
         boolean removed = wiseSayingService.deleteById(id);
 
-        if (!removed)
+        if (!removed) {
             System.out.println(id + "번 명언은 존재하지 않습니다.");
-        else
-            System.out.println(id + "번 명령이 삭제되었습니다.");
+            return;
+        }
+
+        System.out.println(id + "번 명언이 삭제되었습니다.");
     }
 
     public void actionModify(Command command) {
         int id = command.getParamAsInt("id", 0);
 
         if (id == 0) {
-            System.out.println("id(숫자)를 입력해주세요,");
+            System.out.println("id(숫자)를 입력해주세요.");
             return;
         }
 
@@ -107,22 +102,19 @@ public class WiseSayingController {
         WiseSaying wiseSaying = opWiseSaying.get();
         System.out.println("명언(기존) : " + wiseSaying.getContent());
         System.out.print("명언 : ");
-        String content = sc.nextLine();
+        String content = scanner.nextLine();
+
         System.out.println("작가(기존) : " + wiseSaying.getAuthor());
         System.out.print("작가 : ");
-        String author = sc.nextLine();
+        String author = scanner.nextLine();
+
         wiseSayingService.modify(wiseSaying, content, author);
-        System.out.println(id + "번 명언이 수정되었습니다.");
     }
 
     public void actionBuild() {
         wiseSayingService.build();
-        System.out.println("data.json 파일의 내용이 갱신되었습니다.");
-    }
 
-    public void actionDirDelete() {
-        wiseSayingService.deleteDir();
-        System.out.println("디렉토리 삭제가 완료되었습니다.");
+        System.out.println("data.json 파일의 내용이 갱신되었습니다.");
     }
 
     public void makeSampleData(int items) {

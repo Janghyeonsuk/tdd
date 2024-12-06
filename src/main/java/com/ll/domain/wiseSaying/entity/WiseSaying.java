@@ -1,26 +1,21 @@
 package com.ll.domain.wiseSaying.entity;
 
 import com.ll.standard.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
+@ToString
 @EqualsAndHashCode
 public class WiseSaying {
     private int id;
     private String content;
     private String author;
-
-    public WiseSaying(String jsonStr) {
-        this(Util.json.toMap(jsonStr));
-    }
 
     public WiseSaying(Map<String, Object> map) {
         this.id = (int) map.get("id");
@@ -28,8 +23,8 @@ public class WiseSaying {
         this.author = (String) map.get("author");
     }
 
-    public String toJsonStr() {
-        return Util.json.toString(toMap());
+    public WiseSaying(String jsonStr) {
+        this(Util.json.toMap(jsonStr));
     }
 
     public boolean isNew() {
@@ -44,6 +39,10 @@ public class WiseSaying {
         map.put("author", author);
 
         return map;
+    }
+
+    public String toJsonStr() {
+        return Util.json.toString(toMap());
     }
 
     @Override

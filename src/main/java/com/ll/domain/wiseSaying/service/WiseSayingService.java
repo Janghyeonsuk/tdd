@@ -1,8 +1,10 @@
 package com.ll.domain.wiseSaying.service;
 
 import com.ll.domain.wiseSaying.entity.WiseSaying;
+import com.ll.domain.wiseSaying.repository.WiseSayingDbRepository;
 import com.ll.domain.wiseSaying.repository.WiseSayingFileRepository;
 import com.ll.domain.wiseSaying.repository.WiseSayingRepository;
+import com.ll.global.app.AppConfig;
 import com.ll.standard.dto.Pageable;
 
 import java.util.List;
@@ -12,11 +14,14 @@ public class WiseSayingService {
     private final WiseSayingRepository wiseSayingRepository;
 
     public WiseSayingService() {
-        this.wiseSayingRepository = new WiseSayingFileRepository();
+        this.wiseSayingRepository = AppConfig.getRepositoryMode().equals("db") ?
+                new WiseSayingDbRepository() :
+                new WiseSayingFileRepository();
     }
 
     public WiseSaying add(String content, String author) {
         WiseSaying wiseSaying = new WiseSaying(0, content, author);
+
         wiseSayingRepository.save(wiseSaying);
 
         return wiseSaying;
@@ -53,10 +58,6 @@ public class WiseSayingService {
         wiseSayingRepository.makeSampleData(items);
     }
 
-    public void deleteDir() {
-        WiseSayingFileRepository.dropTable();
-    }
-
     public Pageable<WiseSaying> pageableAll(int itemsPerPage, int page) {
         return wiseSayingRepository.pageableAll(itemsPerPage, page);
     }
@@ -64,5 +65,4 @@ public class WiseSayingService {
     public Pageable<WiseSaying> pageable(String keywordType, String keyword, int itemsPerPage, int page) {
         return wiseSayingRepository.pageable(keywordType, keyword, itemsPerPage, page);
     }
-
 }

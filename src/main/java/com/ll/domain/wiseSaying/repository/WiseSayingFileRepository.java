@@ -6,7 +6,6 @@ import com.ll.standard.dto.Pageable;
 import com.ll.standard.util.Util;
 import lombok.SneakyThrows;
 
-import java.nio.file.NoSuchFileException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +57,7 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
                 .map(WiseSaying::new)
                 .sorted(Comparator.comparingInt(WiseSaying::getId).reversed()) // id 순 역순정렬
                 .toList();
-        }
+    }
 
     @Override
     public boolean deleteById(int id) {
@@ -90,6 +89,10 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         Util.file.set(getLastIdPath(), id);
     }
 
+    public static void createTable() {
+        dropTable();
+    }
+
     public static void dropTable() {
         Util.file.rmdir(WiseSayingFileRepository.getTableDirPath());
     }
@@ -99,7 +102,7 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
         String jsonStr = Util.json.toString(
                 findAll()
                         .stream()
-                        .sorted(Comparator.comparingInt(WiseSaying::getId))
+                        .sorted(Comparator.comparingInt(WiseSaying::getId)) // id 오름차순 정렬
                         .map(WiseSaying::toMap)
                         .toList()
         );
@@ -166,6 +169,24 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
     }
 
     @Override
+    public Pageable<WiseSaying> pageableAll(int itemsPerPage, int page) {
+        int totalItems = count();
+
+        List<WiseSaying> content = findAll()
+                .stream()
+                .skip((long) (page - 1) * itemsPerPage)
+                .limit(itemsPerPage)
+                .toList();
+
+        return Pageable.<WiseSaying>builder()
+                .totalItems(totalItems)
+                .itemsPerPage(itemsPerPage)
+                .page(page)
+                .content(content)
+                .build();
+    }
+
+    @Override
     public Pageable<WiseSaying> pageable(String keywordType, String keyword, int itemsPerPage, int page) {
         int totalItems = count(keywordType, keyword);
 
@@ -192,24 +213,6 @@ public class WiseSayingFileRepository implements WiseSayingRepository {
                 .page(page)
                 .keywordType(keywordType)
                 .keyword(keyword)
-                .content(content)
-                .build();
-    }
-
-    @Override
-    public Pageable<WiseSaying> pageableAll(int itemsPerPage, int page) {
-        int totalItems = count();
-
-        List<WiseSaying> content = findAll()
-                .stream()
-                .skip((long) (page - 1) * itemsPerPage)
-                .limit(itemsPerPage)
-                .toList();
-
-        return Pageable.<WiseSaying>builder()
-                .totalItems(totalItems)
-                .itemsPerPage(itemsPerPage)
-                .page(page)
                 .content(content)
                 .build();
     }

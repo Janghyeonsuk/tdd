@@ -4,28 +4,35 @@ import com.ll.domain.wiseSaying.entity.WiseSaying;
 import com.ll.global.app.AppConfig;
 import com.ll.standard.dto.Pageable;
 import com.ll.standard.util.Util;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WiseSayingFileRepositoryTest {
-    private final WiseSayingFileRepository wiseSayingRepository = new WiseSayingFileRepository();
+public class WiseSayingDbRepositoryTest {
+    private static WiseSayingDbRepository wiseSayingRepository;
 
     @BeforeAll
     public static void beforeAll() {
         AppConfig.setTestMode();
+        wiseSayingRepository = new WiseSayingDbRepository();
+
+        wiseSayingRepository.dropTable();
+        wiseSayingRepository.createTable();
     }
 
     @BeforeEach
     public void beforeEach() {
-        WiseSayingFileRepository.dropTable();
+        wiseSayingRepository.truncateTable();
     }
 
-    @AfterEach
-    public void afterEach() {
-        WiseSayingFileRepository.dropTable();
+    @Test
+    public void t0() {
+
     }
 
     @Test
@@ -49,11 +56,11 @@ public class WiseSayingFileRepositoryTest {
 
         wiseSayingRepository.deleteById(wiseSaying.getId());
 
-        String filePath = WiseSayingFileRepository.getRowFilePath(wiseSaying.getId());
+        Optional<WiseSaying> opWiseSaying = wiseSayingRepository.findById(wiseSaying.getId());
 
         assertThat(
-                Util.file.exists(filePath)
-        ).isFalse();
+                opWiseSaying.isEmpty()
+        ).isEqualTo(true);
     }
 
     @Test
@@ -84,31 +91,26 @@ public class WiseSayingFileRepositoryTest {
     }
 
     @Test
-    @DisplayName("lastId.txt 생성")
-    public void t5() {
-        WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
-        wiseSayingRepository.save(wiseSaying1);
-
-        int lastId = wiseSayingRepository.getLastId();
-
-        assertThat(
-                lastId
-        ).isEqualTo(wiseSaying1.getId());
-    }
-
-    @Test
     @DisplayName("명언 수정")
-    public void t6() {
+    public void t5() {
         WiseSaying wiseSaying = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying);
+
+        int wiseSayingId = wiseSaying.getId();
 
         wiseSaying.setContent("나의 삶의 가치는 나의 결정에 달려있다.");
         wiseSaying.setAuthor("아인슈타인");
 
         wiseSayingRepository.save(wiseSaying);
 
+        // 수정을 해도 id가 변경되지 않는다는 것을 테스트
+        assertThat(
+                wiseSayingId
+        ).isEqualTo(wiseSaying.getId());
+
         Optional<WiseSaying> opWiseSaying = wiseSayingRepository.findById(wiseSaying.getId());
 
+        // 수정된 명언을 DB에서 조회하여 확인
         assertThat(
                 opWiseSaying.get()
         ).isEqualTo(wiseSaying);
@@ -116,7 +118,7 @@ public class WiseSayingFileRepositoryTest {
 
     @Test
     @DisplayName("빌드를 하면 data.json 파일이 생성된다.")
-    public void t7() {
+    public void t6() {
         WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying1);
 
@@ -132,7 +134,7 @@ public class WiseSayingFileRepositoryTest {
 
     @Test
     @DisplayName("빌드 시 생성되는 data.json은 배열의 형태이다.")
-    public void t8() {
+    public void t7() {
         WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying1);
 
@@ -163,7 +165,7 @@ public class WiseSayingFileRepositoryTest {
 
     @Test
     @DisplayName("페이징 : count")
-    public void t9() {
+    public void t8() {
         WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying1);
 
@@ -177,7 +179,7 @@ public class WiseSayingFileRepositoryTest {
 
     @Test
     @DisplayName("페이징 : Pageable")
-    public void t11() {
+    public void t9() {
         WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying1);
 
@@ -204,12 +206,12 @@ public class WiseSayingFileRepositoryTest {
                 .isEqualTo(1);
 
         assertThat(pageable.getContent())
-                .containsExactlyInAnyOrder(wiseSaying3, wiseSaying2);
+                .containsExactly(wiseSaying3, wiseSaying2);
     }
 
     @Test
     @DisplayName("페이징(with 검색) : count")
-    public void t12() {
+    public void t10() {
         WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying1);
 
@@ -223,7 +225,7 @@ public class WiseSayingFileRepositoryTest {
 
     @Test
     @DisplayName("페이징(with 검색) : Pageable")
-    public void t13() {
+    public void t11() {
         WiseSaying wiseSaying1 = new WiseSaying(0, "꿈을 지녀라. 그러면 어려운 현실을 이길 수 있다.", "괴테");
         wiseSayingRepository.save(wiseSaying1);
 

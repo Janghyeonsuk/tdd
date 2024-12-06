@@ -1,10 +1,13 @@
 package com.ll;
 
+import com.ll.domain.wiseSaying.repository.WiseSayingDbRepository;
 import com.ll.domain.wiseSaying.repository.WiseSayingFileRepository;
 import com.ll.global.app.App;
 import com.ll.global.app.AppConfig;
 import com.ll.standard.util.TestUtil;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Scanner;
@@ -12,20 +15,9 @@ import java.util.Scanner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AppTest {
-
     @BeforeAll
     public static void beforeAll() {
         AppConfig.setTestMode();
-    }
-
-    @BeforeEach
-    public void beforeEach() {
-        WiseSayingFileRepository.dropTable();
-    }
-
-    @AfterEach
-    public void afterEach() {
-        WiseSayingFileRepository.dropTable();
     }
 
     @Test
@@ -78,11 +70,15 @@ public class AppTest {
     }
 
     public static void dropTables() {
-        WiseSayingFileRepository.dropTable();
+        if (AppConfig.getRepositoryMode().equals("db")) {
+            WiseSayingDbRepository.clearTable();
+        } else {
+            WiseSayingFileRepository.dropTable();
+        }
     }
 
-    public static void makeSampleData(int itemCount) {
+    public static void makeSampleData(int items) {
         App app = new App(null);
-        app.makeSampleData(itemCount);
+        app.makeSampleData(items);
     }
 }
